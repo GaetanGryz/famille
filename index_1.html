@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Famille</title>
+<meta name="theme-color" content="#2F5BEA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Famille">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#F2F5F9;--card:#fff;--ink:#172033;--mute:#66728A;--line:#E1E7F0;--pri:#2F5BEA;--on:#fff;--danger:#C9372C}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1522;--card:#18202F;--ink:#EAF0FB;--mute:#93A0B8;--line:#26314A;--pri:#6C8CFF;--on:#0F1522;--danger:#FF7A6E}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 "DM Sans",system-ui,-apple-system,sans-serif;padding-top:env(safe-area-inset-top,0px)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,.dnum b{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif}
+[hidden]{display:none!important}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 8px}
+h1{margin:0;font-size:30px;font-weight:800}
+.link{background:none;border:0;color:var(--mute);padding:10px 0;font-size:14px}
+.link.danger{color:var(--danger)}
+main{padding:4px 20px calc(110px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto}
+.empty{color:var(--mute);margin-top:40px;text-align:center}
+.day{display:grid;grid-template-columns:76px 1fr;gap:8px;padding:16px 0;border-top:1px solid var(--line)}
+.dnum b{display:block;font-size:40px;line-height:1;font-weight:800}
+.dnum span{display:block;font-size:13px;color:var(--mute);margin-top:4px;text-transform:capitalize}
+.day ul,.items{list-style:none;margin:0;padding:0}
+.day li{display:flex;gap:12px;align-items:baseline;padding:10px 12px;margin-bottom:6px;background:var(--card);border-radius:12px;border-left:4px solid var(--pri)}
+.day time{min-width:54px;font-weight:700;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 14px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px}
+.chip.on{background:var(--pri);color:var(--on);border-color:var(--pri)}
+.chip.new{background:none;border-style:dashed;color:var(--mute)}
+#addi{display:flex;gap:8px;margin-bottom:12px}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.btn{background:var(--pri);color:var(--on);border:0;border-radius:10px;padding:12px 16px;font-weight:700}
+.btn.sec{background:none;color:var(--ink);border:1px solid var(--line)}
+.items li{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:12px;padding:4px 12px;margin-bottom:6px}
+.items label{display:flex;align-items:center;gap:12px;flex:1;padding:10px 0}
+.items input{width:22px;height:22px;accent-color:var(--pri)}
+.items .done span{text-decoration:line-through;color:var(--mute)}
+.x{background:none;border:0;font-size:22px;color:var(--mute);padding:6px 10px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;padding:16px;color:var(--mute);font-weight:500}
+nav button.on{color:var(--pri);font-weight:700;box-shadow:inset 0 3px 0 var(--pri)}
+#fab{position:fixed;right:20px;bottom:calc(76px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--pri);color:var(--on);font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+dialog{border:0;border-radius:18px;padding:20px;width:min(92vw,420px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 14px;font-size:22px}
+.f{display:grid;gap:12px}
+.row{display:flex;gap:8px}
+.chk{display:flex;gap:10px;align-items:center}
+#login{max-width:360px;margin:12vh auto;padding:0 20px}
+#login form{display:grid;gap:12px;margin-top:20px}
+#lerr{color:var(--danger);min-height:20px;margin:0}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px}
+</style>
+</head>
+<body>
+<div id="login" hidden>
+  <h1>Famille</h1>
+  <form id="lf">
+    <input type="email" name="em" placeholder="E-mail" autocomplete="username" required>
+    <input type="password" name="pw" placeholder="Mot de passe" autocomplete="current-password" required>
+    <p id="lerr"></p>
+    <button class="btn">Se connecter</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header><h1 id="ttl">Agenda</h1><button class="link" id="out">Déconnexion</button></header>
+  <main id="main"></main>
+  <button id="fab" aria-label="Ajouter un événement">+</button>
+  <nav><button data-tab="agenda" class="on">Agenda</button><button data-tab="listes">Listes</button></nav>
+</div>
+
+<dialog id="dlg">
+  <h2>Nouvel événement</h2>
+  <form id="evf" class="f">
+    <input type="hidden" name="eid">
+    <input type="text" name="etitle" placeholder="Titre" required>
+    <div class="row"><input type="date" name="edate" required><input type="time" name="etime"></div>
+    <label class="chk"><input type="checkbox" name="eall"> Toute la journée</label>
+    <div class="row">
+      <button class="btn" style="flex:1">Enregistrer</button>
+      <button type="button" class="btn sec" id="evcancel">Annuler</button>
+    </div>
+    <button type="button" class="link danger" id="evdel" hidden>Supprimer l’événement</button>
+  </form>
+</dialog>
+<div id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SB_URL = 'https://gyibuaxcvamemnttnpph.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5aWJ1YXhjdmFtZW1udHRucHBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMDMzOTEsImV4cCI6MjEwNzU3OTM5MX0.Y90nUNwn3bgNXUDS9ekToSKE44MSGKGGQjL-Qo9y30g';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const hhmm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+let S = { tab: 'agenda', events: [], lists: [], items: [], cur: null }, live = false;
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3000);
+}
+
+async function load() {
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const [e, l, i] = await Promise.all([
+    sb.from('events').select('*').gte('starts_at', t.toISOString()).order('starts_at'),
+    sb.from('lists').select('*').order('position').order('created_at'),
+    sb.from('list_items').select('*').order('created_at')
+  ]);
+  if (e.error || l.error || i.error) return toast('Chargement impossible. Vérifie ta connexion.');
+  S.events = e.data; S.lists = l.data; S.items = i.data;
+  if (!S.lists.find(x => x.id === S.cur)) S.cur = S.lists[0]?.id;
+  render();
+}
+
+function agenda() {
+  if (!S.events.length) return '<p class="empty">Aucun événement à venir. Touche + pour en ajouter un.</p>';
+  const g = {};
+  S.events.forEach(ev => (g[key(new Date(ev.starts_at))] ??= []).push(ev));
+  return Object.entries(g).map(([k, evs]) => {
+    const d = new Date(evs[0].starts_at);
+    const rel = k === key(new Date()) ? 'Aujourd’hui' : d.toLocaleDateString('fr-FR', { weekday: 'long' });
+    return `<section class="day"><div class="dnum"><b>${d.getDate()}</b><span>${esc(rel)}<br>${d.toLocaleDateString('fr-FR', { month: 'short' })}</span></div><ul>${
+      evs.map(ev => `<li data-ev="${ev.id}"><time>${ev.all_day ? 'Journée' : hhmm(new Date(ev.starts_at))}</time><span>${esc(ev.title)}</span></li>`).join('')
+    }</ul></section>`;
+  }).join('');
+}
+
+function listes() {
+  const chips = S.lists.map(l => `<button class="chip${l.id === S.cur ? ' on' : ''}" data-l="${l.id}">${esc(l.emoji)} ${esc(l.name)}</button>`).join('')
+    + '<button class="chip new" id="newl">+ Nouvelle liste</button>';
+  const l = S.lists.find(x => x.id === S.cur);
+  if (!l) return `<div class="chips">${chips}</div>`;
+  const its = S.items.filter(x => x.list_id === l.id);
+  const row = x => `<li class="${x.done ? 'done' : ''}"><label><input type="checkbox" data-i="${x.id}" ${x.done ? 'checked' : ''}><span>${esc(x.text)}</span></label><button class="x" data-del="${x.id}" aria-label="Supprimer">×</button></li>`;
+  const todo = its.filter(x => !x.done), done = its.filter(x => x.done);
+  return `<div class="chips">${chips}</div>
+    <form id="addi"><input type="text" name="t" placeholder="Ajouter à ${esc(l.name)}" autocomplete="off" required><button class="btn">Ajouter</button></form>
+    <ul class="items">${todo.map(row).join('')}${done.map(row).join('')}</ul>
+    ${done.length ? '<button class="link" id="clr">Vider les éléments cochés</button><br>' : ''}
+    <button class="link danger" id="dell">Supprimer la liste</button>`;
+}
+
+function render() {
+  $('#ttl').textContent = S.tab === 'agenda' ? 'Agenda' : 'Listes';
+  $('#fab').hidden = S.tab !== 'agenda';
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
+  const keep = document.activeElement?.name === 't' ? document.activeElement.value : '';
+  $('#main').innerHTML = S.tab === 'agenda' ? agenda() : listes();
+  if (keep && $('#addi')) { const i = $('#addi input'); i.value = keep; i.focus(); }
+}
+
+function openEv(ev) {
+  const f = $('#evf').elements, d = ev ? new Date(ev.starts_at) : new Date();
+  f.eid.value = ev?.id || ''; f.etitle.value = ev?.title || ''; f.edate.value = key(d);
+  f.eall.checked = !!ev?.all_day; f.etime.value = ev && !ev.all_day ? hhmm(d) : '09:00'; f.etime.disabled = f.eall.checked;
+  $('#evdel').hidden = !ev;
+  $('#dlg h2').textContent = ev ? 'Modifier l’événement' : 'Nouvel événement';
+  $('#dlg').showModal();
+}
+
+$('#evf').elements.eall.onchange = e => $('#evf').elements.etime.disabled = e.target.checked;
+$('#evcancel').onclick = () => $('#dlg').close();
+$('#evf').onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target.elements, all = f.eall.checked;
+  const row = { title: f.etitle.value.trim(), starts_at: new Date(`${f.edate.value}T${all ? '00:00' : f.etime.value}`).toISOString(), all_day: all };
+  const r = f.eid.value ? await sb.from('events').update(row).eq('id', f.eid.value) : await sb.from('events').insert(row);
+  if (r.error) return toast('Enregistrement impossible. Réessaie.');
+  $('#dlg').close(); load();
+};
+$('#evdel').onclick = async () => {
+  if (!confirm('Supprimer cet événement ?')) return;
+  const r = await sb.from('events').delete().eq('id', $('#evf').elements.eid.value);
+  if (r.error) return toast('Suppression impossible. Réessaie.');
+  $('#dlg').close(); load();
+};
+
+$('#fab').onclick = () => openEv();
+document.querySelector('nav').onclick = e => { const t = e.target.dataset.tab; if (t) { S.tab = t; render(); } };
+$('#out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+$('#main').onclick = async e => {
+  const t = e.target, li = t.closest('[data-ev]');
+  if (li) return openEv(S.events.find(x => x.id === li.dataset.ev));
+  if (t.dataset.l) { S.cur = t.dataset.l; return render(); }
+  if (t.id === 'newl') {
+    const name = prompt('Nom de la nouvelle liste ?')?.trim();
+    if (!name) return;
+    const r = await sb.from('lists').insert({ name, position: S.lists.length + 1 }).select().single();
+    if (r.error) return toast('Création impossible. Réessaie.');
+    S.cur = r.data.id; return load();
+  }
+  if (t.dataset.del) { await sb.from('list_items').delete().eq('id', t.dataset.del); return load(); }
+  if (t.id === 'clr') { await sb.from('list_items').delete().eq('list_id', S.cur).eq('done', true); return load(); }
+  if (t.id === 'dell') {
+    if (!confirm('Supprimer cette liste et tous ses éléments ?')) return;
+    await sb.from('lists').delete().eq('id', S.cur); S.cur = null; return load();
+  }
+};
+$('#main').onchange = async e => {
+  if (!e.target.dataset.i) return;
+  await sb.from('list_items').update({ done: e.target.checked }).eq('id', e.target.dataset.i); load();
+};
+$('#main').onsubmit = async e => {
+  e.preventDefault();
+  const text = e.target.elements.t.value.trim(); if (!text) return;
+  e.target.elements.t.value = '';
+  const r = await sb.from('list_items').insert({ list_id: S.cur, text });
+  if (r.error) toast('Ajout impossible. Réessaie.');
+  load();
+};
+
+async function start() {
+  $('#login').hidden = true; $('#app').hidden = false;
+  await load();
+  if (!live) { live = true; sb.channel('famille').on('postgres_changes', { event: '*', schema: 'public' }, load).subscribe(); }
+}
+$('#lf').onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target.elements;
+  const { error } = await sb.auth.signInWithPassword({ email: f.em.value.trim(), password: f.pw.value });
+  if (error) return $('#lerr').textContent = 'E-mail ou mot de passe incorrect.';
+  start();
+};
+sb.auth.getSession().then(({ data }) => data.session ? start() : $('#login').hidden = false);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
