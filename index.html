@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Famille</title>
+<meta name="theme-color" content="#2F5BEA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Famille">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#F2F5F9;--card:#fff;--ink:#172033;--mute:#66728A;--line:#E1E7F0;--pri:#2F5BEA;--on:#fff;--danger:#C9372C}
+@media(prefers-color-scheme:dark){:root{--bg:#0F1522;--card:#18202F;--ink:#EAF0FB;--mute:#93A0B8;--line:#26314A;--pri:#6C8CFF;--on:#0F1522;--danger:#FF7A6E}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 "DM Sans",system-ui,-apple-system,sans-serif;padding-top:env(safe-area-inset-top,0px)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,.dnum b{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif}
+[hidden]{display:none!important}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 8px}
+h1{margin:0;font-size:30px;font-weight:800}
+.link{background:none;border:0;color:var(--mute);padding:10px 0;font-size:14px}
+.link.danger{color:var(--danger)}
+main{padding:4px 20px calc(110px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto}
+.empty{color:var(--mute);margin-top:40px;text-align:center}
+.day{display:grid;grid-template-columns:76px 1fr;gap:8px;padding:16px 0;border-top:1px solid var(--line)}
+.dnum b{display:block;font-size:40px;line-height:1;font-weight:800}
+.dnum span{display:block;font-size:13px;color:var(--mute);margin-top:4px;text-transform:capitalize}
+.day ul,.items{list-style:none;margin:0;padding:0}
+.day li{display:flex;gap:12px;align-items:baseline;padding:10px 12px;margin-bottom:6px;background:var(--card);border-radius:12px;border-left:4px solid var(--pri)}
+.day time{min-width:54px;font-weight:700;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 14px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px}
+.chip.on{background:var(--pri);color:var(--on);border-color:var(--pri)}
+.chip.new{background:none;border-style:dashed;color:var(--mute)}
+#addi{display:flex;gap:8px;margin-bottom:12px}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.btn{background:var(--pri);color:var(--on);border:0;border-radius:10px;padding:12px 16px;font-weight:700}
+.btn.sec{background:none;color:var(--ink);border:1px solid var(--line)}
+.items li{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:12px;padding:4px 12px;margin-bottom:6px}
+.items label{display:flex;align-items:center;gap:12px;flex:1;padding:10px 0}
+.items input{width:22px;height:22px;accent-color:var(--pri)}
+.items .done span{text-decoration:line-through;color:var(--mute)}
+.x{background:none;border:0;font-size:22px;color:var(--mute);padding:6px 10px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;padding:16px;color:var(--mute);font-weight:500}
+nav button.on{color:var(--pri);font-weight:700;box-shadow:inset 0 3px 0 var(--pri)}
+#fab{position:fixed;right:20px;bottom:calc(76px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--pri);color:var(--on);font-size:30px;box-shadow:0 4[...]
+dialog{border:0;border-radius:18px;padding:20px;width:min(92vw,420px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 14px;font-size:22px}
+.f{display:grid;gap:12px}
+.row{display:flex;gap:8px}
+.chk{display:flex;gap:10px;align-items:center}
+#login{max-width:360px;margin:12vh auto;padding:0 20px}
+#login form{display:grid;gap:12px;margin-top:20px}
+#lerr{color:var(--danger);min-height:20px;margin:0}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px}
+</style>
+</head>
+<body>
+<div id="login" hidden>
+  <h1>Famille</h1>
+  <form id="lf">
+    <input type="email" name="em" placeholder="E-mail" autocomplete="username" required>
+    <input type="password" name="pw" placeholder="Mot de passe" autocomplete="current-password" required>
+    <p id="lerr"></p>
+    <button class="btn">Se connecter</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header><h1 id="ttl">Agenda</h1><button class="link" id="out">Déconnexion</button></header>
+  <main id="main"></main>
+  <button id="fab" aria-label="Ajouter un événement">+</button>
+  <nav><button data-tab="agenda" class="on">Agenda</button><button data-tab="listes">Listes</button></nav>
+</div>
+
+<dialog id="dlg">
+  <h2>Nouvel événement</h2>
+  <form id="evf" class="f">
+    <input type="hidden" name="eid">
+    <input type="text" name="etitle" placeholder="Titre" required>
+    <div class="row"><input type="date" name="edate" required><input type="time" name="etime"></div>
+    <label class="chk"><input type="checkbox" name="eall"> Toute la journée</label>
+    <div class="row">
+      <button class="btn" style="flex:1">Enregistrer</button>
+      <button type="button" class="btn sec" id="evcancel">Annuler</button>
+    </div>
+    <button type="button" class="link danger" id="evdel" hidden>Supprimer l’événement</button>
+  </form>
+</dialog>
+<div id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SB_URL = 'https://gyibuaxcvamemnttnpph.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5aWJ1YXhjdmFtZW1udHRucHBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMDMzOTEsImV4cCI6MjEwNzU3OTM5MX0.Y90nUNwn3bgNXUDS9ek[...]
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>\
